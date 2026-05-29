@@ -1,0 +1,43 @@
+Question,Symptom,Category
+Q3A,Unable to feel positive emotion,Depression
+Q5A,Difficulty getting started,Depression
+Q10A,Nothing to look forward to,Depression
+Q13A,Sad and depressed,Depression
+Q16A,Loss of interest,Depression
+Q17A,Feeling worthless,Depression
+Q21A,Life not worthwhile,Depression
+Q24A,No enjoyment,Depression
+Q26A,Down-hearted and blue,Depression
+Q31A,Unable to become enthusiastic,Depression
+Q34A,Feeling pretty worthless,Depression
+Q37A,No meaning in life,Depression
+Q38A,Feeling life was meaningless,Depression
+Q42A,Difficulty working up initiative,Depression
+Q2A,Dryness of mouth,Anxiety
+Q4A,Breathing difficulty,Anxiety
+Q7A,Shakiness,Anxiety
+Q9A,Situations made anxious,Anxiety
+Q15A,Feeling faint,Anxiety
+Q19A,Perspiring without reason,Anxiety
+Q20A,Scared without reason,Anxiety
+Q23A,Difficulty swallowing,Anxiety
+Q25A,Heart awareness,Anxiety
+Q28A,Close to panic,Anxiety
+Q30A,Fear of being hindered by anxiety,Anxiety
+Q36A,Feeling terrified,Anxiety
+Q40A,Worried about panic,Anxiety
+Q41A,Trembling,Anxiety
+Q1A,Upset by trivial things,Stress
+Q6A,Overreacting to situations,Stress
+Q8A,Difficulty relaxing,Stress
+Q11A,Easily upset,Stress
+Q12A,Using nervous energy,Stress
+Q14A,Impatient when delayed,Stress
+Q18A,Touchy or irritable,Stress
+Q22A,Hard to wind down,Stress
+Q27A,Very irritable,Stress
+Q29A,Hard to calm down,Stress
+Q32A,Difficulty tolerating interruptions,Stress
+Q33A,Nervous tension,Stress
+Q35A,Intolerant of delays,Stress
+Q39A,Easily agitated,Stress
