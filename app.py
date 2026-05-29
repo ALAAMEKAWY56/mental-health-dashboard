@@ -379,7 +379,7 @@ def get_base64(image_path):
     with open(image_path, "rb") as img:
         return base64.b64encode(img.read()).decode()
 
-base64_participants  = get_base64("Participants.png")
+base64_participants  = get_base64("participants.png")
 base64_depression    = get_base64("depression.png")
 base64_stress        = get_base64("stress.png")
 base64_anxiety       = get_base64("anxiety.png")
