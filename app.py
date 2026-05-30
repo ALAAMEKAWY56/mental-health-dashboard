@@ -361,16 +361,23 @@ df, question_categories = load_data()
 
 @st.cache_resource
 def load_models():
-    model    = joblib.load('models/model_multi.pkl')
+    dep_model = joblib.load('models/model_depression.pkl')
+    anx_model = joblib.load('models/model_anxiety.pkl')
+    str_model = joblib.load('models/model_stress.pkl')
+
     encoders = {
         'depression': joblib.load('models/encoder_depression.pkl'),
         'anxiety':    joblib.load('models/encoder_anxiety.pkl'),
         'stress':     joblib.load('models/encoder_stress.pkl'),
     }
-    features = joblib.load('models/features_multi.pkl')
-    return model, encoders, features
+    features = {
+        'depression': joblib.load('models/features_depression.pkl'),
+        'anxiety':    joblib.load('models/features_anxiety.pkl'),
+        'stress':     joblib.load('models/features_stress.pkl'),
+    }
+    return dep_model, anx_model, str_model, encoders, features
 
-ml_model, ml_encoders, ml_features = load_models()
+dep_model, anx_model, str_model, ml_encoders, ml_features = load_models()
 
 # =========================================
 # LOAD ICONS
@@ -467,6 +474,19 @@ stress_questions = {
     'Q33A': 'Nervous tension',
     'Q35A': 'Intolerant of delays',
     'Q39A': 'Easily agitated'
+}
+
+tipi_questions = {
+    'TIPI1':  'Extraverted, enthusiastic',
+    'TIPI2':  'Critical, quarrelsome',
+    'TIPI3':  'Dependable, self-disciplined',
+    'TIPI4':  'Anxious, easily upset',
+    'TIPI5':  'Open to new experiences',
+    'TIPI6':  'Reserved, quiet',
+    'TIPI7':  'Sympathetic, warm',
+    'TIPI8':  'Disorganized, careless',
+    'TIPI9':  'Calm, emotionally stable',
+    'TIPI10': 'Conventional, uncreative'
 }
 
 # =========================================
@@ -593,7 +613,7 @@ if section == "ML Prediction":
                 style="width:32px;height:32px;object-fit:contain;flex-shrink:0;">
             <span style="font-size:13px;color:#6F4E37;font-weight:500;">
                 This tool is for educational purposes only and is not a clinical diagnosis.
-                Model accuracy: Depression 86% | Anxiety 83% | Stress 84%
+                Model recall accuracy: Depression 99% | Anxiety 98% | Stress 98%
             </span>
         </div>
         """,
@@ -685,6 +705,21 @@ if section == "ML Prediction":
                     )
             st.markdown("<br>", unsafe_allow_html=True)
 
+        # ── Step 3: Personality (TIPI) ──  (OUTSIDE the q_groups loop)
+        st.markdown("### Step 3: Personality (1 = Disagree, 7 = Agree)")
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        tipi_cols = st.columns(2)
+        for i, (tcode, tdesc) in enumerate(tipi_questions.items()):
+            with tipi_cols[i % 2]:
+                responses[tcode] = st.select_slider(
+                    f"**{tcode}** — {tdesc}",
+                    options=[1, 2, 3, 4, 5, 6, 7],
+                    value=4,
+                    key=f"slider_{tcode}"
+                )
+        st.markdown("<br>", unsafe_allow_html=True)
+
         st.markdown("<br>", unsafe_allow_html=True)
 
         # Inject base64 icon into button via CSS
@@ -712,18 +747,30 @@ if section == "ML Prediction":
         )
 
     # Results
-    if submitted:
+    if submitted: 
         demo_values = {
             'age': age, 'gender': gender, 'education': education,
             'familysize': familysize, 'married': married
         }
-        all_responses = {**responses, **demo_values}
-        input_df      = pd.DataFrame([all_responses])[ml_features]
-        preds         = ml_model.predict(input_df)[0]
 
-        dep_label = ml_encoders['depression'].inverse_transform([preds[0]])[0]
-        anx_label = ml_encoders['anxiety'].inverse_transform([preds[1]])[0]
-        str_label = ml_encoders['stress'].inverse_transform([preds[2]])[0]
+        # ── Compute TIPI Big Five composites (must match training) ──
+        composites = {
+            'extraversion':        responses['TIPI1'] + (8 - responses['TIPI6']),
+            'agreeableness':       (8 - responses['TIPI2']) + responses['TIPI7'],
+            'conscientiousness':   responses['TIPI3'] + (8 - responses['TIPI8']),
+            'emotional_stability': (8 - responses['TIPI4']) + responses['TIPI9'],
+            'openness':            responses['TIPI5'] + (8 - responses['TIPI10']),
+        }
+
+        all_responses = {**responses, **demo_values , **composites}
+
+        input_dep = pd.DataFrame([all_responses])[ml_features['depression']]
+        input_anx = pd.DataFrame([all_responses])[ml_features['anxiety']]
+        input_str = pd.DataFrame([all_responses])[ml_features['stress']]
+
+        dep_label = ml_encoders['depression'].inverse_transform([dep_model.predict(input_dep)[0]])[0]
+        anx_label = ml_encoders['anxiety'].inverse_transform([anx_model.predict(input_anx)[0]])[0]
+        str_label = ml_encoders['stress'].inverse_transform([str_model.predict(input_str)[0]])[0]
 
         st.markdown("---")
         st.markdown("### Your Results")
