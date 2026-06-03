@@ -6,7 +6,7 @@ An interactive data science project analyzing Depression, Anxiety, and Stress pa
 
 ## 🌐 Live Dashboard
 
-👉 [Open Dashboard](https://alaamekawy56-mental-health-dashboard.streamlit.app)
+[Open Dashboard](https://mental-health-dashboard-7wpzusncyc7nkxkdioafwo.streamlit.app)
 
 ---
 
